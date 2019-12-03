@@ -6,7 +6,7 @@ import (
 type Account struct {
 	money int64
 	available bool
-	mu sync.Mutex
+	sync.Mutex
 }
 
 func Open(initialDeposit int64) *Account {
@@ -18,7 +18,8 @@ func Open(initialDeposit int64) *Account {
 }
 
 func (a *Account) Close()(payout int64, ok bool) {
-	a.mu.Lock()
+	a.Lock()
+	defer a.Unlock()
 	if a.available {
 		payout = a.money
 		a.available = false
@@ -27,24 +28,24 @@ func (a *Account) Close()(payout int64, ok bool) {
 		payout = 0
 		ok = false
 	}
-	a.mu.Unlock()
 	return
 }
 
 func (a *Account) Balance()(balance int64, ok bool) {
-	a.mu.Lock()
+	a.Lock()
+	defer a.Unlock()
 	if a.available {
 		balance = a.money 
 	} else {
 		balance = 0
 	}
 	ok = a.available
-	a.mu.Unlock()
 	return 
 }
 
 func (a *Account) Deposit(amount int64)(newBalance int64, ok bool){
-	a.mu.Lock()
+	a.Lock()
+	defer a.Unlock()
 	ok = a.available
 	if a.available {
 		a.money += amount
@@ -58,6 +59,5 @@ func (a *Account) Deposit(amount int64)(newBalance int64, ok bool){
 	} else {
 		newBalance = 0
 	}
-	a.mu.Unlock()
 	return 
 }
