@@ -1,45 +1,44 @@
 package cryptosquare
 import (
 	"math"
-	"unicode"
+	"strings"
 )
 
-func Encode(pt string) string {
-	var normalized []rune
+func normalizer(r rune) (newR rune) {
+	r, newR = r|32, -1
 
-	for _, r := range pt {
-		if unicode.IsLetter(r) {
-			normalized = append(normalized, unicode.ToLower(r))
-		} else if unicode.IsDigit(r) {
-			normalized = append(normalized, r)
-		}
+	if 'a' <= r && r <= 'z' || '0' <= r && r <= '9' {
+		newR = r
 	}
+	return
+}
 
-	len := len(normalized)
+func Encode(pt string) string {
+	pt = strings.Map(normalizer, pt)
+
+	len := len(pt)
 
 	c, r := getCR(len)
-	var crypto []rune
+	var b strings.Builder
 	
 	index := 0
 
 	for i := 0; i < c; i++ {
-		
 		for j := 0; j < r; j++ {
 			index = j * c + i
 			if index >= len{
-				crypto = append(crypto, ' ')
+				b.WriteByte(' ')
 				continue
 			}
-
-			crypto = append(crypto, normalized[index])
+			b.WriteByte(pt[index])
 		}
 
 		if i != c - 1 {
-			crypto = append(crypto, ' ')
+			b.WriteByte(' ')
 		}
 	}
 
-	return string(crypto)
+	return b.String()
 }
 
 func intSqrt(n int) int {
