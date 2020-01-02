@@ -38,38 +38,38 @@ func TestNew(t *testing.T) {
 	}
 }
 
-// func TestNewFromSlice(t *testing.T) {
-// 	// nil slice should give empty set
-// 	want := "{}"
-// 	if got := NewFromSlice(nil).String(); got != want {
-// 		t.Fatalf(`NewFromSlice(nil) = %s, want %s.`, got, want)
-// 	}
+func TestNewFromSlice(t *testing.T) {
+	// nil slice should give empty set
+	want := "{}"
+	if got := NewFromSlice(nil).String(); got != want {
+		t.Fatalf(`NewFromSlice(nil) = %s, want %s.`, got, want)
+	}
 
-// 	// slice with one element:
-// 	want = `{"a"}`
-// 	if got := NewFromSlice([]string{"a"}).String(); got != want {
-// 		t.Fatalf(`NewFromSlice([]string{"a"}) = %s, want %s.`, got, want)
-// 	}
+	// slice with one element:
+	want = `{"a"}`
+	if got := NewFromSlice([]string{"a"}).String(); got != want {
+		t.Fatalf(`NewFromSlice([]string{"a"}) = %s, want %s.`, got, want)
+	}
 
-// 	// slice with repeated element:
-// 	if got := NewFromSlice([]string{"a", "a"}).String(); got != want {
-// 		t.Fatalf(`NewFromSlice([]string{"a", "a"}) = %s, want %s.`, got, want)
-// 	}
+	// slice with repeated element:
+	if got := NewFromSlice([]string{"a", "a"}).String(); got != want {
+		t.Fatalf(`NewFromSlice([]string{"a", "a"}) = %s, want %s.`, got, want)
+	}
 
-// 	// slice with two elements:
-// 	got := NewFromSlice([]string{"a", "b"}).String()
-// 	want1 := `{"a", "b"}`
-// 	want2 := `{"b", "a"}`
-// 	if got != want1 && got != want2 { // order undefined
-// 		t.Fatalf(`NewFromSlice([]string{"a", "b"}) = %s, want %s or (%s).`,
-// 			got, want1, want2)
-// 	}
-// }
+	// slice with two elements:
+	got := NewFromSlice([]string{"a", "b"}).String()
+	want1 := `{"a", "b"}`
+	want2 := `{"b", "a"}`
+	if got != want1 && got != want2 { // order undefined
+		t.Fatalf(`NewFromSlice([]string{"a", "b"}) = %s, want %s or (%s).`,
+			got, want1, want2)
+	}
+}
 
-// // Trusting NewFromSlice now, remaining tests are table driven, taking data
-// // from cases_test.go and building sets with NewFromSlice.
+// Trusting NewFromSlice now, remaining tests are table driven, taking data
+// from cases_test.go and building sets with NewFromSlice.
 
-// // test case types used in cases_test.go
+// test case types used in cases_test.go
 
 type (
 	// unary function, bool result (IsEmpty)

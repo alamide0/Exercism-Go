@@ -4,24 +4,24 @@ import (
 	"strings"
 )
 
-type Set struct {
-	strs []string
-}
+type Set map[string]bool
 
 func (set Set) Len() int {
-	return len(set.strs)
+	return len(set)
 }
 
 func (set Set) String() string {
 	var builder strings.Builder
 	builder.WriteRune('{')
-	for i := 0; i < set.Len(); i++ {
+	count := 0
+	for k, _ := range set {
 		builder.WriteString("\"")
-		builder.WriteString(set.strs[i])
+		builder.WriteString(k)
 		builder.WriteString("\"")
-		if i != set.Len()-1 {
+		if count != len(set)-1 {
 			builder.WriteString(", ")
 		}
+		count++
 	}
 
 	builder.WriteRune('}')
@@ -30,39 +30,33 @@ func (set Set) String() string {
 }
 
 func New() Set {
-	return *new(Set)
+	return make(Set)
 }
 
 func NewFromSlice(strs []string) Set {
-	set := new(Set)
+	set := New()
 	for _, v := range strs {
 		set.Add(v)
 	}
-	return *set
+	return set
 }
 
-func (set *Set) Has(str string) bool {
-	for _, v := range set.strs {
-		if v == str {
-			return true
-		}
-	}
-	return false
+func (set Set) Has(str string) bool {
+	_, ok := set[str]
+	return ok
 }
 
-func (set *Set) Add(str string) {
-	if !set.Has(str) {
-		set.strs = append(set.strs, str)
-	}
+func (set Set) Add(str string) {
+	set[str] = true
 }
 
-func (set *Set) IsEmpty() bool {
-	return set.Len() == 0
+func (set Set) IsEmpty() bool {
+	return len(set) == 0
 }
 
 func Subset(s1, s2 Set) bool {
-	for _, v := range s1.strs {
-		if !s2.Has(v) {
+	for k, _ := range s1 {
+		if !s2.Has(k) {
 			return false
 		}
 	}
@@ -71,8 +65,8 @@ func Subset(s1, s2 Set) bool {
 }
 
 func Disjoint(s1, s2 Set) bool {
-	for _, v := range s1.strs {
-		if s2.Has(v) {
+	for k, _ := range s1 {
+		if s2.Has(k) {
 			return false
 		}
 	}
@@ -82,7 +76,7 @@ func Disjoint(s1, s2 Set) bool {
 
 func Equal(s1, s2 Set) bool {
 
-	if s1.Len() != s2.Len() {
+	if len(s1) != len(s2) {
 		return false
 	}
 
@@ -91,32 +85,32 @@ func Equal(s1, s2 Set) bool {
 
 func Intersection(s1, s2 Set) Set {
 
-	set := new(Set)
+	set := New()
 
-	for _, v := range s1.strs {
-		if s2.Has(v) {
-			set.Add(v)
+	for k, _ := range s1 {
+		if s2.Has(k) {
+			set.Add(k)
 		}
 	}
 
-	return *set
+	return set
 }
 
 func Difference(s1, s2 Set) Set {
-	set := new(Set)
+	set := New()
 
-	for _, v := range s1.strs {
-		if !s2.Has(v) {
-			set.Add(v)
+	for k, _ := range s1 {
+		if !s2.Has(k) {
+			set.Add(k)
 		}
 	}
 
-	return *set
+	return set
 }
 
 func Union(s1, s2 Set) Set {
-	for _, v := range s1.strs {
-		(&s2).Add(v)
+	for k, _ := range s1 {
+		s2.Add(k)
 	}
 
 	return s2
